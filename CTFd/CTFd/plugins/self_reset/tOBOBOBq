@@ -1,0 +1,18 @@
+[1mNAME[0m
+    ctf plugins
+
+[1mSYNOPSIS[0m
+    ctf plugins [4mCOMMAND[0m
+
+[1mCOMMANDS[0m
+    [1m[4mCOMMAND[0m[0m is one of the following:
+
+     dir
+
+     install
+
+     list
+
+     path
+
+     uninstall

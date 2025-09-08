@@ -1,0 +1,4 @@
+{
+    "name": "PE Reset",
+    "route": "/plugins/self_reset/"
+}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="jumbotron text-center">
+        <h2>Do you want to reset your submissions?</h2>
+        <button id="reset-all" class="btn btn-primary" onclick="resetAll()">Reset All Submissions</button>
+        <button id="reset-solves" class="btn btn-success" onclick="resetSolves()">Reset Correct Submissions</button>
+        <button id="reset-fails" class="btn btn-danger" onclick="resetFails()">Reset Incorrect Submissions</button>
+    </div>
+</div>
+
+<script>
+    // Redirect to reset all submissions
+    function resetAll() {
+        const url = '/plugins/self_reset/?reset=y';
+        window.location.replace(url);
+    }
+
+    // Redirect to reset only solves
+    function resetSolves() {
+        const url = '/plugins/self_reset/solves_only?reset=y';
+        window.location.replace(url);
+    }
+
+    // Redirect to reset only fails
+    function resetFails() {
+        const url = '/plugins/self_reset/fails_only?reset=y';
+        window.location.replace(url);
+    }
+</script>
+
+{% endblock %}
+
+{% block scripts %}
+    <script defer src="{{ url_for('views.themes', theme='admin', path='js/echarts.bundle.js') }}"></script>
+    <script defer src="{{ url_for('views.themes', theme='admin', path='js/graphs.js') }}"></script>
+{% endblock %}
+

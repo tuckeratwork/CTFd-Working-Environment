@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+	
+<div class="container">
+	<div class="jumbotron text-center">
+		<h2>Your PE's have been reset.</h2>
+	  </div>
+</div>
+
+		
+{% endblock %}
+
+{% block scripts %}
+	<script defer src="{{ url_for('views.themes', theme='admin', path='js/echarts.bundle.js') }}"></script>
+	<script defer src="{{ url_for('views.themes', theme='admin', path='js/graphs.js') }}"></script>
+{% endblock %}
