@@ -4,7 +4,7 @@
 from flask import render_template, Blueprint, request, url_for, redirect
 
 from flask_sqlalchemy import SQLAlchemy
-from CTFd.cache import cache
+from CTFd.cache import cache, clear_challenges
 from CTFd.models import (
     Challenges,
     Pages,
@@ -55,6 +55,9 @@ def load(app):
             # Commit the database changes, so the submission removals are reflected
             db.session.commit()
 
+            # Clear all challenge caches
+            clear_challenges()
+
             # Clear caches for solves and fails
             cache.delete_memoized(user.get_solves)
             cache.delete_memoized(user.get_fails)
@@ -93,6 +96,9 @@ def load(app):
             # Commit the database changes, so the solve removals are reflected
             db.session.commit()
 
+            # Clear all challenge caches
+            clear_challenges()
+
             # Clear caches for solves
             cache.delete_memoized(user.get_solves)
             if user.team:
@@ -128,6 +134,10 @@ def load(app):
 
             # Commit the database changes, so the fail removals are reflected
             db.session.commit()
+
+            # Clear all challenge caches
+            clear_challenges()
+
             # Redirect the user to the challenges page
             return redirect(url_for('challenges.listing'))
         else:
