@@ -22,7 +22,6 @@ class UserProgressLog(db.Model):
 from flask import Blueprint, render_template, request, jsonify
 from CTFd.plugins import migrations, register_plugin_assets_directory
 from CTFd.plugins.challenges import BaseChallenge
-from CTFd.models import Solves, Fails, Challenges, Users
 from CTFd.utils.decorators import admins_only
 from sqlalchemy import func, distinct
 
@@ -88,8 +87,7 @@ def get_categories():
 def load(app):
     app.register_blueprint(user_progress)
     register_plugin_assets_directory(app, base_path="/plugins/user_progress/assets/")
-    # It's not standard to run migrations from load(), but in this environment,
-    # we do not have access to the CLI to run `ctfd db upgrade`.
+main
     migrations.upgrade()
 
     original_solve = BaseChallenge.solve
