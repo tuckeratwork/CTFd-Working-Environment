@@ -84,6 +84,8 @@ def get_categories():
     category_list = [category[0] for category in categories]
     return jsonify({'success': True, 'data': category_list})
 
+import os
+
 # Plugin entry point
 def load(app):
     app.register_blueprint(user_progress)
@@ -94,6 +96,16 @@ def load(app):
     # The following code is a one-time fix to clean up a previous bad migration.
     # It checks for a config entry with the old, bad revision ID and removes it.
     with app.app_context():
+        # --- START PYTHON DEBUGGING ---
+        migrations_path = os.path.join(os.path.dirname(__file__), "migrations")
+        print(f"DEBUG [PYTHON]: Listing contents of {migrations_path}")
+        try:
+            files = os.listdir(migrations_path)
+            print(f"DEBUG [PYTHON]: Files found: {files}")
+        except Exception as e:
+            print(f"DEBUG [PYTHON]: Error listing directory: {e}")
+        # --- END PYTHON DEBUGGING ---
+
         bad_rev_config = Configs.query.filter_by(key='user_progress_alembic_version').first()
         if bad_rev_config and bad_rev_config.value == '20250910115755':
             db.session.delete(bad_rev_config)
