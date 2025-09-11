@@ -22,7 +22,7 @@ class UserProgressLog(db.Model):
 from flask import Blueprint, render_template, request, jsonify
 from CTFd.plugins import migrations, register_plugin_assets_directory
 from CTFd.plugins.challenges import BaseChallenge
-from CTFd.models import Solves, Fails, Challenges, Users
+from CTFd.models import Solves, Fails, Challenges, Users, Configs
 from CTFd.utils.decorators import admins_only
 from sqlalchemy import func, distinct
 
@@ -83,8 +83,6 @@ def get_categories():
     categories = db.session.query(Challenges.category).distinct().all()
     category_list = [category[0] for category in categories]
     return jsonify({'success': True, 'data': category_list})
-
-from CTFd.models import Configs
 
 # Plugin entry point
 def load(app):
