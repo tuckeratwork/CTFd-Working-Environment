@@ -22,6 +22,7 @@ class UserProgressLog(db.Model):
 from flask import Blueprint, render_template, request, jsonify
 from CTFd.plugins import migrations, register_plugin_assets_directory
 from CTFd.plugins.challenges import BaseChallenge
+from CTFd.models import Solves, Fails, Challenges, Users, Configs
 from CTFd.utils.decorators import admins_only
 from sqlalchemy import func, distinct
 
@@ -87,37 +88,46 @@ def get_categories():
 def load(app):
     app.register_blueprint(user_progress)
     register_plugin_assets_directory(app, base_path="/plugins/user_progress/assets/")
-main
-    migrations.upgrade()
+
+    # It's not standard to run migrations from load(), but in this environment,
+    # we do not have access to the CLI to run `ctfd db upgrade`.
+    # The following code is a one-time fix to clean up a previous bad migration.
+    # It checks for a config entry with the old, bad revision ID and removes it.
+    with app.app_context():
+        bad_rev_config = Configs.query.filter_by(key='user_progress_alembic_version').first()
+        if bad_rev_config and bad_rev_config.value == '20250910115755':
+            db.session.delete(bad_rev_config)
+            db.session.commit()
+        migrations.upgrade()
 
     original_solve = BaseChallenge.solve
     original_fail = BaseChallenge.fail
 
     def new_solve(cls, user, team, challenge, request):
-        # Log the solve attempt
-        log_entry = UserProgressLog(
-            user_id=user.id,
-            challenge_id=challenge.id,
-            category=challenge.category,
-            status='correct'
-        )
-        db.session.add(log_entry)
-        db.session.commit()
-
+        with app.app_context():
+            # Log the solve attempt
+            log_entry = UserProgressLog(
+                user_id=user.id,
+                challenge_id=challenge.id,
+                category=challenge.category,
+                status='correct'
+            )
+            db.session.add(log_entry)
+            db.session.commit()
         # Call the original solve function
         return original_solve(cls, user, team, challenge, request)
 
     def new_fail(cls, user, team, challenge, request):
-        # Log the fail attempt
-        log_entry = UserProgressLog(
-            user_id=user.id,
-            challenge_id=challenge.id,
-            category=challenge.category,
-            status='incorrect'
-        )
-        db.session.add(log_entry)
-        db.session.commit()
-
+        with app.app_context():
+            # Log the fail attempt
+            log_entry = UserProgressLog(
+                user_id=user.id,
+                challenge_id=challenge.id,
+                category=challenge.category,
+                status='incorrect'
+            )
+            db.session.add(log_entry)
+            db.session.commit()
         # Call the original fail function
         return original_fail(cls, user, team, challenge, request)
 
