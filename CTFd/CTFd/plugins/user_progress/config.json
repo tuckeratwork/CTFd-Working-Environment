@@ -1,0 +1,9 @@
+{
+    "name": "User Progress",
+    "description": "Admin panel plugin to track and visualize student progress.",
+    "version": "1.0.0",
+    "authors": "Jules",
+    "website": "",
+    "route": "/admin/user_progress",
+    "admin_route": "/admin/user_progress"
+}
